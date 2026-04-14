@@ -221,6 +221,8 @@ class AboutContent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), default='About Our Church')
     content = db.Column(db.Text, default='')
+    location = db.Column(db.Text, default='')
+    service_times = db.Column(db.Text, default='')
     logo_url = db.Column(db.String(500), default='')
     logo_public_id = db.Column(db.String(200), default='')
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc),
@@ -231,6 +233,8 @@ class AboutContent(db.Model):
             'id': self.id,
             'title': self.title or '',
             'content': self.content or '',
+            'location': self.location or '',
+            'service_times': self.service_times or '',
             'logo_url': self.logo_url or '',
             'updated_at': self.updated_at.isoformat() if self.updated_at else '',
         }

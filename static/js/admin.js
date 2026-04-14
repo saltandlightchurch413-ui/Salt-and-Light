@@ -35,7 +35,12 @@ const Admin = {
                         </div>
                         <div class="form-group">
                             <label class="form-label">Password</label>
-                            <input type="password" class="form-input" id="login-password" required placeholder="••••••••" autocomplete="current-password">
+                            <div style="position:relative;">
+                                <input type="password" class="form-input" id="login-password" required placeholder="••••••••" autocomplete="current-password" style="padding-right: 40px;">
+                                <button type="button" onclick="Admin.togglePassword('login-password', this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);display:flex;align-items:center;">
+                                    <i data-lucide="eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="form-group">
                             <p class="form-error hidden" id="login-error"></p>
@@ -619,6 +624,14 @@ const Admin = {
                         <label class="form-label">Content</label>
                         <textarea class="form-textarea" id="about-content" style="min-height:200px;">${Utils.escapeHtml(about.content || '')}</textarea>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Location (Address/Map Link)</label>
+                        <input type="text" class="form-input" id="about-location" value="${Utils.escapeHtml(about.location || '')}" placeholder="Church Address or Google Maps Link">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Service Times</label>
+                        <textarea class="form-textarea" id="about-service-times" style="min-height:100px;" placeholder="e.g. Sunday Service: 10:00 AM">${Utils.escapeHtml(about.service_times || '')}</textarea>
+                    </div>
                     <button class="btn btn-primary" id="about-save"><i data-lucide="save"></i> Save Changes</button>
                 </div>
             `;
@@ -631,6 +644,8 @@ const Admin = {
                         body: JSON.stringify({
                             title: document.getElementById('about-title').value,
                             content: document.getElementById('about-content').value,
+                            location: document.getElementById('about-location').value,
+                            service_times: document.getElementById('about-service-times').value,
                         }),
                     });
                     Utils.toast('About content updated!', 'success');
@@ -699,15 +714,30 @@ const Admin = {
                 <form id="change-password-form">
                     <div class="form-group">
                         <label class="form-label">Current Password</label>
-                        <input type="password" class="form-input" id="curr-password" required>
+                        <div style="position:relative;">
+                            <input type="password" class="form-input" id="curr-password" required style="padding-right: 40px;">
+                            <button type="button" onclick="Admin.togglePassword('curr-password', this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);display:flex;align-items:center;">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">New Password</label>
-                        <input type="password" class="form-input" id="new-password" required minlength="6">
+                        <div style="position:relative;">
+                            <input type="password" class="form-input" id="new-password" required minlength="6" style="padding-right: 40px;">
+                            <button type="button" onclick="Admin.togglePassword('new-password', this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);display:flex;align-items:center;">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-input" id="confirm-password" required minlength="6">
+                        <div style="position:relative;">
+                            <input type="password" class="form-input" id="confirm-password" required minlength="6" style="padding-right: 40px;">
+                            <button type="button" onclick="Admin.togglePassword('confirm-password', this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);display:flex;align-items:center;">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Update Password</button>
                 </form>
@@ -752,5 +782,20 @@ const Admin = {
         } catch (err) {
             Utils.toast(err.message, 'error');
         }
+    },
+
+    // ─── UTILS ──────────────────────────────
+    togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.innerHTML = '<i data-lucide="eye-off"></i>';
+        } else {
+            input.type = 'password';
+            btn.innerHTML = '<i data-lucide="eye"></i>';
+        }
+        if (window.lucide) lucide.createIcons({ nodes: [btn] });
     }
 };

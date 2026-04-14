@@ -251,6 +251,8 @@ def update_about():
 
     about.title = data.get('title', about.title).strip()
     about.content = data.get('content', about.content).strip()
+    about.location = data.get('location', about.location).strip()
+    about.service_times = data.get('service_times', about.service_times).strip()
     db.session.commit()
     return jsonify({'success': True, 'about': about.to_dict()})
 

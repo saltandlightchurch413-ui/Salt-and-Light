@@ -329,7 +329,27 @@ const App = {
                     <div class="about-card">
                         ${about.logo_url ? `<img src="${about.logo_url}" alt="Church Logo" class="about-logo">` : ''}
                         <h1 class="about-title">${Utils.escapeHtml(about.title || 'About Our Church')}</h1>
-                        <div class="about-content">${about.content ? about.content.split('\n').map(p => `<p>${Utils.escapeHtml(p)}</p>`).join('') : '<p>Welcome to our church.</p>'}</div>
+                        <div class="about-content">
+                            ${about.content ? about.content.split('\n').map(p => `<p>${Utils.escapeHtml(p)}</p>`).join('') : '<p>Welcome to our church.</p>'}
+                        </div>
+                        
+                        ${(about.location || about.service_times) ? `
+                        <div class="about-info-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-xl); margin-top: var(--space-2xl); border-top: 1px solid var(--surface-border); padding-top: var(--space-xl);">
+                            ${about.location ? `
+                            <div class="info-block">
+                                <h3 style="display:flex;align-items:center;gap:var(--space-sm);margin-bottom:var(--space-sm);color:var(--primary);"><i data-lucide="map-pin"></i> Location</h3>
+                                <p style="color:var(--text-secondary);">${Utils.escapeHtml(about.location)}</p>
+                            </div>
+                            ` : ''}
+                            
+                            ${about.service_times ? `
+                            <div class="info-block">
+                                <h3 style="display:flex;align-items:center;gap:var(--space-sm);margin-bottom:var(--space-sm);color:var(--primary);"><i data-lucide="clock"></i> Service Times</h3>
+                                ${about.service_times.split('\n').map(time => `<p style="color:var(--text-secondary);margin-bottom:var(--space-xs);">${Utils.escapeHtml(time)}</p>`).join('')}
+                            </div>
+                            ` : ''}
+                        </div>
+                        ` : ''}
                     </div>
                 </div>
             `;
