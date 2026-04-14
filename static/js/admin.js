@@ -66,7 +66,11 @@ const Admin = {
                 });
                 this.isAuthenticated = true;
                 Utils.toast('Welcome back!', 'success');
-                window.location.hash = '/admin';
+                if (window.location.hash === '#/admin') {
+                    App.route();
+                } else {
+                    window.location.hash = '/admin';
+                }
             } catch (err) {
                 errorEl.textContent = err.message;
                 errorEl.classList.remove('hidden');
