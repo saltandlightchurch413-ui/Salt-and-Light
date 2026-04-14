@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly. Browse, search, and share hymns and praise songs.">
+    <meta name="theme-color" content="#6C63FF">
+    <title>Salt & Light Church — Digital Songbook</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Salt & Light Church</p>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="navbar">
+        <div class="navbar-inner">
+            <a href="#/" class="navbar-brand" id="nav-brand">
+                <div class="brand-icon" id="brand-logo-container">
+                    <i data-lucide="music-2"></i>
+                </div>
+                <span class="brand-text">Salt & Light</span>
+            </a>
+
+            <div class="navbar-search" id="nav-search-container">
+                <div class="search-input-wrapper">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="nav-search-input" class="search-input" placeholder="Search songs in Telugu or English..." autocomplete="off">
+                    <kbd class="search-shortcut">Ctrl+K</kbd>
+                </div>
+                <div class="search-dropdown" id="search-dropdown"></div>
+            </div>
+
+            <div class="navbar-links" id="navbar-links">
+                <a href="#/" class="nav-link" data-page="home"><i data-lucide="home"></i><span>Home</span></a>
+                <a href="#/songs" class="nav-link" data-page="songs"><i data-lucide="music"></i><span>Songs</span></a>
+                <a href="#/index" class="nav-link" data-page="index"><i data-lucide="list-ordered"></i><span>Index</span></a>
+                <a href="#/gallery" class="nav-link" data-page="gallery"><i data-lucide="image"></i><span>Gallery</span></a>
+                <a href="#/about" class="nav-link" data-page="about"><i data-lucide="info"></i><span>About</span></a>
+                <a href="#/admin" class="nav-link nav-admin" data-page="admin"><i data-lucide="shield"></i><span>Admin</span></a>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay">
+        <div class="mobile-menu">
+            <div class="mobile-menu-header">
+                <span>Menu</span>
+                <button class="mobile-close-btn" id="mobile-close-btn"><i data-lucide="x"></i></button>
+            </div>
+            <a href="#/" class="mobile-nav-link" data-page="home"><i data-lucide="home"></i>Home</a>
+            <a href="#/songs" class="mobile-nav-link" data-page="songs"><i data-lucide="music"></i>Songs</a>
+            <a href="#/index" class="mobile-nav-link" data-page="index"><i data-lucide="list-ordered"></i>Index</a>
+            <a href="#/gallery" class="mobile-nav-link" data-page="gallery"><i data-lucide="image"></i>Gallery</a>
+            <a href="#/about" class="mobile-nav-link" data-page="about"><i data-lucide="info"></i>About</a>
+            <a href="#/admin" class="mobile-nav-link" data-page="admin"><i data-lucide="shield"></i>Admin</a>
+        </div>
+    </div>
+
+    <!-- Main App Content -->
+    <main id="app" class="app-content"></main>
+
+    <!-- Footer -->
+    <footer id="app-footer" class="app-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="brand-icon small"><i data-lucide="music-2"></i></div>
+                <span>Salt & Light Church</span>
+            </div>
+            <div class="footer-links" id="footer-social-links"></div>
+            <p class="footer-copy">&copy; 2026 Salt & Light Church. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/search.js"></script>
+    <script src="/static/js/songs.js"></script>
+    <script src="/static/js/gallery.js"></script>
+    <script src="/static/js/admin.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
