@@ -48,8 +48,15 @@
                 <div class="search-dropdown" id="search-dropdown"></div>
             </div>
 
-            <!-- Google Translate Widget -->
-            <div id="google_translate_element" class="nav-translate"></div>
+            <!-- Language Toggle -->
+            <div class="lang-switch" id="lang-switch">
+                <button class="lang-switch-btn active" data-lang="en" onclick="switchLanguage('en')">
+                    <span>EN</span>
+                </button>
+                <button class="lang-switch-btn" data-lang="te" onclick="switchLanguage('te')">
+                    <span>తె</span>
+                </button>
+            </div>
 
             <div class="navbar-links" id="navbar-links">
                 <a href="#/" class="nav-link" data-page="home"><i data-lucide="home"></i><span>Home</span></a>
@@ -79,6 +86,16 @@
             <a href="#/gallery" class="mobile-nav-link" data-page="gallery"><i data-lucide="image"></i>Gallery</a>
             <a href="#/about" class="mobile-nav-link" data-page="about"><i data-lucide="info"></i>About</a>
             <a href="#/admin" class="mobile-nav-link" data-page="admin"><i data-lucide="shield"></i>Admin</a>
+            <div style="margin-top: auto; padding-top: var(--space-lg); border-top: 1px solid var(--surface-border);">
+                <div class="lang-switch" style="width: 100%; justify-content: center;">
+                    <button class="lang-switch-btn active" data-lang="en" onclick="switchLanguage('en')">
+                        <span>EN</span>
+                    </button>
+                    <button class="lang-switch-btn" data-lang="te" onclick="switchLanguage('te')">
+                        <span>తె</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -102,14 +119,43 @@
 
     <!-- Scripts -->
     <script type="text/javascript">
+        function switchLanguage(lang) {
+            // Update toggle buttons
+            document.querySelectorAll('.lang-switch-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            // Set Google Translate cookie
+            const domain = window.location.hostname;
+            if (lang === 'en') {
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + domain;
+            } else {
+                document.cookie = 'googtrans=/en/te; path=/;';
+                document.cookie = 'googtrans=/en/te; path=/; domain=.' + domain;
+            }
+            window.location.reload();
+        }
+
+        // Detect current language from cookie and update toggle
+        (function() {
+            const match = document.cookie.match(/googtrans=\/en\/te/);
+            if (match) {
+                document.querySelectorAll('.lang-switch-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === 'te');
+                });
+            }
+        })();
+
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'en',
-                includedLanguages: 'en,te,hi',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                includedLanguages: 'te',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
             }, 'google_translate_element');
         }
     </script>
+    <div id="google_translate_element" style="display:none;"></div>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script src="/static/js/utils.js"></script>

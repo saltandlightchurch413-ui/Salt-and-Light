@@ -433,30 +433,38 @@ input, textarea, select {
     opacity: 0.4;
 }
 
-/* ─── Google Translate Widget ─────────────────────────── */
-.nav-translate {
+/* ─── Language Switch (2-Language Toggle) ─────────────── */
+.lang-switch {
     display: flex;
     align-items: center;
+    background: var(--bg);
+    border-radius: var(--radius-full);
+    padding: 3px;
+    gap: 2px;
     margin-left: auto;
+    border: 1.5px solid var(--surface-border);
 }
 
-.nav-translate select {
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--surface-border);
-    background: var(--surface);
-    color: var(--text-secondary);
+.lang-switch-btn {
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
     font-size: 0.8rem;
-    font-family: var(--font-body);
-    font-weight: 500;
-    cursor: pointer;
-    outline: none;
+    font-weight: 700;
+    color: var(--text-muted);
     transition: all var(--duration) var(--ease);
+    letter-spacing: 0.3px;
+    line-height: 1;
 }
 
-.nav-translate select:hover {
-    border-color: var(--primary-light);
+.lang-switch-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.lang-switch-btn:not(.active):hover {
     color: var(--primary);
+    background: var(--primary-bg);
 }
 
 /* Hide annoying google translation banner & tooltip */
@@ -475,6 +483,9 @@ body {
 }
 .goog-te-gadget .goog-te-combo {
     margin: 0;
+}
+.skiptranslate {
+    display: none !important;
 }
 
 /* ─── Navbar Links ────────────────────────────────────── */
@@ -1440,6 +1451,169 @@ body {
     opacity: 0.3;
     cursor: default;
     pointer-events: none;
+}
+
+.letter-btn.active {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: var(--shadow-glow);
+}
+
+.letter-btn.active::before {
+    opacity: 1;
+}
+
+.letter-btn.active span {
+    color: white;
+}
+
+/* Index Songs Listing (inline under letter) */
+.index-songs-container {
+    margin-top: var(--space-lg);
+    animation: fadeIn 0.3s var(--ease);
+}
+
+.index-songs-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid var(--primary-bg);
+}
+
+.index-songs-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.index-songs-title .letter-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.index-songs-count {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.index-songs-list {
+    display: grid;
+    gap: var(--space-sm);
+}
+
+.index-song-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--surface-border);
+    cursor: pointer;
+    transition: all var(--duration) var(--ease);
+}
+
+.index-song-item:hover {
+    transform: translateX(4px);
+    border-color: var(--primary-lighter);
+    box-shadow: var(--shadow-sm);
+    background: var(--surface-hover);
+}
+
+.index-song-item .song-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary-bg);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.index-song-item .song-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.index-song-item .song-title-en {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.index-song-item .song-title-te {
+    font-family: var(--font-telugu);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.index-song-item .song-arrow {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: all var(--duration) var(--ease);
+}
+
+.index-song-item:hover .song-arrow {
+    color: var(--primary);
+    transform: translateX(2px);
+}
+
+.index-song-item .song-arrow svg {
+    width: 16px;
+    height: 16px;
+}
+
+.index-close-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--surface-border);
+    cursor: pointer;
+    transition: all var(--duration) var(--ease);
+}
+
+.index-close-btn:hover {
+    color: var(--danger);
+    border-color: var(--danger);
+    background: var(--danger-bg);
+}
+
+.index-close-btn svg {
+    width: 14px;
+    height: 14px;
 }
 
 

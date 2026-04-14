@@ -282,7 +282,7 @@ const Songs = {
     },
 
     /**
-     * Render Song Index Page
+     * Render Song Index Page (Parnasala-style inline listing)
      */
     async renderIndex() {
         const app = document.getElementById('app');
@@ -305,7 +305,7 @@ const Songs = {
             const allEnglish = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
             const availableEn = new Set(data.english);
 
-            // Telugu consonants
+            // Telugu consonants & vowels
             const teluguLetters = [
                 'అ','ఆ','ఇ','ఈ','ఉ','ఊ','ఎ','ఏ','ఐ','ఒ','ఓ','ఔ',
                 'క','ఖ','గ','ఘ','చ','ఛ','జ','ఝ','ట','ఠ','డ','ఢ','ణ',
@@ -317,24 +317,30 @@ const Songs = {
             let html = `
                 <div class="index-section">
                     <h2 class="index-section-title">English (A–Z)</h2>
-                    <div class="letter-grid">
+                    <div class="letter-grid" id="letter-grid-en">
                         ${allEnglish.map(l => `
-                            <button class="letter-btn ${availableEn.has(l) ? '' : 'disabled'}" onclick="Songs.filterByLetter('${l}', 'en')">
+                            <button class="letter-btn ${availableEn.has(l) ? '' : 'disabled'}"
+                                    data-letter="${l}" data-type="en"
+                                    onclick="Songs.filterByLetter('${l}', 'en', this)">
                                 <span>${l}</span>
                             </button>
                         `).join('')}
                     </div>
+                    <div id="index-songs-en"></div>
                 </div>
 
                 <div class="index-section">
                     <h2 class="index-section-title">తెలుగు (Telugu)</h2>
-                    <div class="letter-grid">
+                    <div class="letter-grid" id="letter-grid-te">
                         ${teluguLetters.map(l => `
-                            <button class="letter-btn telugu-letter ${availableTe.has(l) ? '' : 'disabled'}" onclick="Songs.filterByLetter('${l}', 'te')">
+                            <button class="letter-btn telugu-letter ${availableTe.has(l) ? '' : 'disabled'}"
+                                    data-letter="${l}" data-type="te"
+                                    onclick="Songs.filterByLetter('${l}', 'te', this)">
                                 <span>${l}</span>
                             </button>
                         `).join('')}
                     </div>
+                    <div id="index-songs-te"></div>
                 </div>
             `;
 
@@ -346,11 +352,117 @@ const Songs = {
         }
     },
 
-    filterByLetter(letter, type) {
-        if (type === 'en') {
-            window.location.hash = `/songs?letter_en=${encodeURIComponent(letter)}`;
-        } else {
-            window.location.hash = `/songs?letter_te=${encodeURIComponent(letter)}`;
+    /**
+     * Filter by letter — shows songs inline under the letter grid (Parnasala-style)
+     */
+    async filterByLetter(letter, type, btnEl) {
+        const gridId = type === 'en' ? 'letter-grid-en' : 'letter-grid-te';
+        const containerId = type === 'en' ? 'index-songs-en' : 'index-songs-te';
+        const grid = document.getElementById(gridId);
+        const container = document.getElementById(containerId);
+
+        if (!container) return;
+
+        // If clicking the same active letter, close the listing
+        if (btnEl && btnEl.classList.contains('active')) {
+            btnEl.classList.remove('active');
+            container.innerHTML = '';
+            return;
+        }
+
+        // Remove active from all buttons in this grid
+        if (grid) {
+            grid.querySelectorAll('.letter-btn').forEach(b => b.classList.remove('active'));
+        }
+
+        // Set active on clicked button
+        if (btnEl) btnEl.classList.add('active');
+
+        // Show loading
+        container.innerHTML = `<div class="index-songs-container"><div style="padding: var(--space-lg); text-align: center; color: var(--text-muted);">Loading songs...</div></div>`;
+
+        try {
+            const paramKey = type === 'en' ? 'letter_en' : 'letter_te';
+            const data = await Utils.fetch(`/api/songs?${paramKey}=${encodeURIComponent(letter)}&per_page=200`);
+
+            if (data.songs.length === 0) {
+                container.innerHTML = `
+                    <div class="index-songs-container">
+                        <div style="padding: var(--space-lg); text-align: center; color: var(--text-muted);">
+                            No songs found for "${letter}"
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="index-songs-container">
+                    <div class="index-songs-header">
+                        <div class="index-songs-title">
+                            <span class="letter-badge">${letter}</span>
+                            Songs starting with "${letter}"
+                        </div>
+                        <div style="display:flex;align-items:center;gap:var(--space-md);">
+                            <span class="index-songs-count">${data.songs.length} song${data.songs.length !== 1 ? 's' : ''}</span>
+                            <button class="index-close-btn" onclick="Songs.closeIndexSongs('${type}', '${letter}')">
+                                <i data-lucide="x"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                    <div class="index-songs-list">
+                        ${data.songs.map((song, i) => {
+                            const titleEn = song.title_en || '';
+                            const titleTe = song.title_te || '';
+                            const primary = type === 'te' ? titleTe : (titleEn || titleTe);
+                            const secondary = type === 'te' ? titleEn : titleTe;
+
+                            return `
+                                <div class="index-song-item" onclick="window.location.hash='/songs/${song.slug}'">
+                                    <div class="song-num">${i + 1}</div>
+                                    <div class="song-info">
+                                        <div class="song-title-en">${Utils.escapeHtml(primary)}</div>
+                                        ${secondary ? `<div class="song-title-te">${Utils.escapeHtml(secondary)}</div>` : ''}
+                                    </div>
+                                    <div class="song-arrow"><i data-lucide="chevron-right"></i></div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+
+            if (window.lucide) lucide.createIcons({ nodes: [container] });
+
+            // Smooth scroll to the songs listing
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        } catch (err) {
+            container.innerHTML = `
+                <div class="index-songs-container">
+                    <div style="padding: var(--space-lg); text-align: center; color: var(--danger);">
+                        Failed to load songs: ${err.message}
+                    </div>
+                </div>
+            `;
+        }
+    },
+
+    /**
+     * Close inline song listing for a letter
+     */
+    closeIndexSongs(type, letter) {
+        const gridId = type === 'en' ? 'letter-grid-en' : 'letter-grid-te';
+        const containerId = type === 'en' ? 'index-songs-en' : 'index-songs-te';
+        const grid = document.getElementById(gridId);
+        const container = document.getElementById(containerId);
+
+        if (grid) {
+            grid.querySelectorAll('.letter-btn').forEach(b => b.classList.remove('active'));
+        }
+        if (container) {
+            container.innerHTML = '';
         }
     }
 };
+
