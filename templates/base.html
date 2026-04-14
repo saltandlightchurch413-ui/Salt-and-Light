@@ -48,6 +48,9 @@
                 <div class="search-dropdown" id="search-dropdown"></div>
             </div>
 
+            <!-- Google Translate Widget -->
+            <div id="google_translate_element" class="nav-translate"></div>
+
             <div class="navbar-links" id="navbar-links">
                 <a href="#/" class="nav-link" data-page="home"><i data-lucide="home"></i><span>Home</span></a>
                 <a href="#/songs" class="nav-link" data-page="songs"><i data-lucide="music"></i><span>Songs</span></a>
@@ -98,6 +101,17 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Scripts -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,te,hi',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     <script src="/static/js/utils.js"></script>
     <script src="/static/js/search.js"></script>
     <script src="/static/js/songs.js"></script>
