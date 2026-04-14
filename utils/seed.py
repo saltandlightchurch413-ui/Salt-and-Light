@@ -3,6 +3,8 @@ from models import db, Admin, AboutContent, Category
 
 def seed_database():
     """Seed the database with initial data if empty."""
+    # Ensure all tables are created first
+    db.create_all()
 
     # Seed admin
     admin = Admin.query.first()
