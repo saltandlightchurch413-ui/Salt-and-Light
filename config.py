@@ -7,17 +7,11 @@ load_dotenv()
 class Config:
     """Base configuration."""
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/church_songbook')
+    
+    # Use SQLite by default unless DATABASE_URL is provided in environment
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///' + os.path.join(basedir, 'app.db'))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        'pool_pre_ping': True,
-        'pool_recycle': 300,
-    }
-
-    # Cloudinary
-    CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', '')
-    CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY', '')
-    CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET', '')
 
     # Session
     SESSION_COOKIE_HTTPONLY = True

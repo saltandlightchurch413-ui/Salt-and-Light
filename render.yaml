@@ -1,9 +1,3 @@
-databases:
-  - name: church-songbook-db
-    plan: free
-    databaseName: church_songbook
-    user: church_admin
-
 services:
   - type: web
     name: church-digital-songbook
@@ -12,17 +6,7 @@ services:
     buildCommand: pip install -r requirements.txt && flask db upgrade
     startCommand: gunicorn app:app
     envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: church-songbook-db
-          property: connectionString
-      - key: SECRET_KEY
-        generateValue: true
       - key: FLASK_ENV
         value: production
-      - key: CLOUDINARY_CLOUD_NAME
-        sync: false
-      - key: CLOUDINARY_API_KEY
-        sync: false
-      - key: CLOUDINARY_API_SECRET
-        sync: false
+      - key: SECRET_KEY
+        generateValue: true
