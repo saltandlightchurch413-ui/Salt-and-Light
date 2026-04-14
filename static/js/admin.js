@@ -86,6 +86,7 @@ const Admin = {
                     <button class="admin-nav-btn ${this.currentTab === 'social' ? 'active' : ''}" onclick="Admin.switchTab('social')"><i data-lucide="share-2"></i> Social Links</button>
                     <button class="admin-nav-btn ${this.currentTab === 'about' ? 'active' : ''}" onclick="Admin.switchTab('about')"><i data-lucide="info"></i> About</button>
                     <button class="admin-nav-btn ${this.currentTab === 'logo' ? 'active' : ''}" onclick="Admin.switchTab('logo')"><i data-lucide="image-plus"></i> Logo</button>
+                    <button class="admin-nav-btn ${this.currentTab === 'settings' ? 'active' : ''}" onclick="Admin.switchTab('settings')"><i data-lucide="lock"></i> Settings</button>
                     <button class="admin-nav-btn logout" onclick="Admin.logout()"><i data-lucide="log-out"></i> Logout</button>
                 </aside>
                 <div class="admin-main" id="admin-content"></div>
@@ -120,6 +121,7 @@ const Admin = {
             case 'social': await this.loadSocialTab(content); break;
             case 'about': await this.loadAboutTab(content); break;
             case 'logo': await this.loadLogoTab(content); break;
+            case 'settings': await this.loadSettingsTab(content); break;
         }
     },
 
@@ -684,6 +686,60 @@ const Admin = {
         } catch (err) {
             document.getElementById('logo-area').innerHTML = `<p>${err.message}</p>`;
         }
+    },
+
+    // ─── SETTINGS TAB ───────────────────────
+    async loadSettingsTab(container) {
+        container.innerHTML = `
+            <div class="admin-panel-header">
+                <h2 class="admin-panel-title">Settings</h2>
+            </div>
+            <div style="background:var(--surface);border-radius:var(--radius-lg);padding:var(--space-xl);border:1px solid var(--surface-border);max-width:500px;">
+                <h3 style="margin-bottom:var(--space-md);">Change Password</h3>
+                <form id="change-password-form">
+                    <div class="form-group">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" class="form-input" id="curr-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-input" id="new-password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-input" id="confirm-password" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Update Password</button>
+                </form>
+            </div>
+        `;
+        if (window.lucide) lucide.createIcons({ nodes: [container] });
+
+        document.getElementById('change-password-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const currPassword = document.getElementById('curr-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (newPassword !== confirmPassword) {
+                Utils.toast('New passwords do not match', 'error');
+                return;
+            }
+
+            try {
+                await Utils.fetch('/api/auth/update-password', {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        current_password: currPassword,
+                        new_password: newPassword
+                    })
+                });
+                Utils.toast('Password updated successfully!', 'success');
+                e.target.reset();
+            } catch (err) {
+                Utils.toast(err.message, 'error');
+            }
+        });
     },
 
     // ─── LOGOUT ─────────────────────────────

@@ -41,3 +41,27 @@ def auth_status():
     if current_user.is_authenticated:
         return jsonify({'authenticated': True, 'email': current_user.email})
     return jsonify({'authenticated': False})
+
+
+@auth_bp.route('/api/auth/update-password', methods=['PUT'])
+@login_required
+def update_password():
+    """Update admin password."""
+    from models import db
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
+
+    current_password = data.get('current_password', '')
+    new_password = data.get('new_password', '')
+
+    if not current_password or not new_password:
+        return jsonify({'error': 'Current and new password are required'}), 400
+        
+    if not current_user.check_password(current_password):
+        return jsonify({'error': 'Incorrect current password'}), 401
+        
+    current_user.set_password(new_password)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Password updated successfully'})
