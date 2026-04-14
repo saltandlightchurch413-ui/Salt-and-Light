@@ -52,23 +52,24 @@ def get_first_letter_telugu(text):
     """Extract the base first letter from Telugu text."""
     if not text:
         return ''
-    text = text.strip()
+    
+    # Normalize text to NFC
+    text = unicodedata.normalize('NFC', text.strip())
+    
     # Remove any leading punctuation or whitespace
     text = re.sub(r'^[\s\u200C\u200D\uFEFF"\'«»„""]+', '', text)
     if not text:
         return ''
-    first_char = text[0]
-    cp = ord(first_char)
-    # Check if it's a Telugu character
-    if 0x0C00 <= cp <= 0x0C7F:
-        # If it's a vowel (independent), return as-is
-        if TELUGU_VOWEL_RANGE[0] <= cp <= TELUGU_VOWEL_RANGE[1]:
-            return first_char
-        # If it's a consonant, return the consonant without any following vowel sign
-        if TELUGU_CONSONANT_RANGE[0] <= cp <= TELUGU_CONSONANT_RANGE[1]:
-            return first_char
-        return first_char
-    return first_char.upper()
+        
+    # Remove all Telugu vowel signs (matras) so compound letters become their base
+    # \u0C3E to \u0C56 covers all vowel signs and modifiers in Telugu block
+    text = re.sub(r'[\u0C3E-\u0C56]', '', text)
+    
+    if not text:
+        return ''
+        
+    # Return the first character which is now guaranteed to be the base letter
+    return text[0]
 
 
 def get_first_letter_english(text):
