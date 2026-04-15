@@ -290,3 +290,127 @@ def upload_logo():
     about.logo_public_id = result['public_id']
     db.session.commit()
     return jsonify({'success': True, 'logo_url': about.logo_url})
+
+# ─── Backup & Restore ───────────────────────────────────
+
+@admin_bp.route('/api/admin/backup', methods=['GET'])
+@login_required
+def backup_data():
+    """Export all database content as JSON."""
+    data = {
+        'categories': [],
+        'songs': [],
+        'social_links': [],
+        'about': None
+    }
+    
+    for cat in Category.query.all():
+        data['categories'].append({
+            'name': cat.name,
+            'name_te': cat.name_te
+        })
+        
+    for song in Song.query.all():
+        data['songs'].append({
+            'title_en': song.title_en,
+            'title_te': song.title_te,
+            'lyrics_en': song.lyrics_en,
+            'lyrics_te': song.lyrics_te,
+            'category_name': song.category.name if song.category else None
+        })
+        
+    for link in SocialLink.query.all():
+        data['social_links'].append({
+            'platform': link.platform,
+            'url': link.url,
+            'icon': link.icon,
+            'order': link.order
+        })
+        
+    about = AboutContent.query.first()
+    if about:
+        data['about'] = {
+            'title': about.title,
+            'content': about.content,
+            'location': about.location,
+            'service_times': about.service_times,
+            'logo_url': about.logo_url,
+            'logo_public_id': about.logo_public_id
+        }
+        
+    return jsonify({'success': True, 'backup': data})
+
+
+@admin_bp.route('/api/admin/restore', methods=['POST'])
+@login_required
+def restore_data():
+    """Restore database from JSON."""
+    if 'backup' not in request.files:
+        return jsonify({'error': 'No backup file provided'}), 400
+        
+    import json
+    file = request.files['backup']
+    try:
+        data = json.load(file)
+    except Exception:
+        return jsonify({'error': 'Invalid JSON file'}), 400
+        
+    # Process Categories
+    cat_map = {} # map name -> id
+    for c_data in data.get('categories', []):
+        cat = Category.query.filter_by(name=c_data['name']).first()
+        if not cat:
+            cat = Category(name=c_data['name'], name_te=c_data.get('name_te', ''))
+            db.session.add(cat)
+            db.session.commit()
+        cat_map[cat.name] = cat.id
+
+    # Process Songs
+    for s_data in data.get('songs', []):
+        cat_id = None
+        if s_data.get('category_name') and s_data['category_name'] in cat_map:
+            cat_id = cat_map[s_data['category_name']]
+            
+        # Check if exists
+        song = Song.query.filter_by(title_en=s_data['title_en'], title_te=s_data['title_te']).first()
+        if not song:
+            song = Song(
+                title_en=s_data['title_en'],
+                title_te=s_data['title_te'],
+                lyrics_en=s_data.get('lyrics_en', ''),
+                lyrics_te=s_data.get('lyrics_te', ''),
+                category_id=cat_id
+            )
+            song.compute_search_fields()
+            db.session.add(song)
+
+    # Process Social Links
+    for l_data in data.get('social_links', []):
+        link = SocialLink.query.filter_by(platform=l_data['platform']).first()
+        if not link:
+            link = SocialLink(
+                platform=l_data['platform'],
+                url=l_data['url'],
+                icon=l_data.get('icon', 'link'),
+                order=l_data.get('order', 0)
+            )
+            db.session.add(link)
+
+    # Process About
+    about_data = data.get('about')
+    if about_data:
+        about = AboutContent.query.first()
+        if not about:
+            about = AboutContent()
+            db.session.add(about)
+        about.title = about_data.get('title', about.title)
+        about.content = about_data.get('content', about.content)
+        about.location = about_data.get('location', about.location)
+        about.service_times = about_data.get('service_times', about.service_times)
+        if 'logo_url' in about_data:
+            about.logo_url = about_data['logo_url']
+        if 'logo_public_id' in about_data:
+            about.logo_public_id = about_data['logo_public_id']
+
+    db.session.commit()
+    return jsonify({'success': True, 'message': 'Data restored successfully'})

@@ -746,6 +746,20 @@ const Admin = {
                     <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Update Password</button>
                 </form>
             </div>
+            
+            <div style="background:var(--surface);border-radius:var(--radius-lg);padding:var(--space-xl);border:1px solid var(--surface-border);max-width:500px;margin-top:var(--space-xl);">
+                <h3 style="margin-bottom:var(--space-md);">Backup & Restore</h3>
+                <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:var(--space-lg);">
+                    Export all your songs, categories, and settings to a JSON file. You can use this file to restore your data if you switch databases.
+                </p>
+                <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;">
+                    <button class="btn btn-primary" id="btn-export-data"><i data-lucide="download"></i> Export Data</button>
+                    <label class="btn btn-secondary" style="margin:0;cursor:pointer;">
+                        <i data-lucide="upload"></i> Restore Data
+                        <input type="file" id="file-restore-data" accept=".json" style="display:none;">
+                    </label>
+                </div>
+            </div>
         `;
         if (window.lucide) lucide.createIcons({ nodes: [container] });
 
@@ -772,6 +786,52 @@ const Admin = {
                 e.target.reset();
             } catch (err) {
                 Utils.toast(err.message, 'error');
+            }
+        });
+
+        // Backup Logic
+        document.getElementById('btn-export-data').addEventListener('click', async () => {
+            try {
+                Utils.toast('Preparing backup...', 'info');
+                const data = await Utils.fetch('/api/admin/backup');
+                if (data.backup) {
+                    const blob = new Blob([JSON.stringify(data.backup, null, 2)], { type: 'application/json' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `salt-and-light-backup-${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    Utils.toast('Backup downloaded successfully', 'success');
+                }
+            } catch (err) {
+                Utils.toast(err.message, 'error');
+            }
+        });
+
+        // Restore Logic
+        document.getElementById('file-restore-data').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (!confirm('Are you sure you want to restore from this backup? It will upload all the songs inside the file.')) {
+                e.target.value = '';
+                return;
+            }
+
+            try {
+                Utils.toast('Restoring data... Please wait.', 'info');
+                const formData = new FormData();
+                formData.append('backup', file);
+
+                await Utils.fetchForm('/api/admin/restore', formData);
+                Utils.toast('Data restored successfully!', 'success');
+                e.target.value = '';
+            } catch (err) {
+                Utils.toast(err.message, 'error');
+                e.target.value = '';
             }
         });
     },
