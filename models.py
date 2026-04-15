@@ -207,10 +207,14 @@ class SocialLink(db.Model):
     order = db.Column(db.Integer, default=0)
 
     def to_dict(self):
+        url = self.url
+        if url and not (url.startswith('http://') or url.startswith('https://')):
+            url = 'https://' + url
+            
         return {
             'id': self.id,
             'platform': self.platform,
-            'url': self.url,
+            'url': url,
             'icon': self.icon or 'link',
             'order': self.order or 0,
         }

@@ -195,6 +195,9 @@ def create_social_link():
 
     platform = data.get('platform', '').strip()
     url = data.get('url', '').strip()
+    
+    if url and not (url.startswith('http://') or url.startswith('https://')):
+        url = 'https://' + url
 
     if not platform or not url:
         return jsonify({'error': 'Platform and URL are required'}), 400
@@ -217,7 +220,12 @@ def update_social_link(link_id):
     link = SocialLink.query.get_or_404(link_id)
     data = request.get_json()
     link.platform = (data or {}).get('platform', link.platform).strip()
-    link.url = (data or {}).get('url', link.url).strip()
+    
+    new_url = (data or {}).get('url', link.url).strip()
+    if new_url and not (new_url.startswith('http://') or new_url.startswith('https://')):
+        new_url = 'https://' + new_url
+    link.url = new_url
+    
     link.icon = (data or {}).get('icon', link.icon).strip()
     link.order = (data or {}).get('order', link.order)
     db.session.commit()
