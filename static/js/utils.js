@@ -182,5 +182,15 @@ const Utils = {
         const known = ['youtube', 'facebook', 'instagram', 'twitter', 'whatsapp'];
         const p = platform.toLowerCase();
         return known.includes(p) ? p : 'default';
+    },
+
+    /**
+     * Ensure a URL is absolute (has http:// or https://).
+     */
+    ensureAbsoluteUrl(url) {
+        if (!url) return '';
+        url = url.trim();
+        if (url.startsWith('http://') || url.startsWith('https://')) return url;
+        return 'https://' + url;
     }
 };

@@ -68,7 +68,7 @@ const App = {
             const container = document.getElementById('footer-social-links');
             if (container && data.links.length > 0) {
                 container.innerHTML = data.links.map(link =>
-                    `<a href="${link.url}" target="_blank" rel="noopener" class="footer-link">
+                    `<a href="${Utils.ensureAbsoluteUrl(link.url)}" target="_blank" rel="noopener" class="footer-link">
                         <i data-lucide="${Utils.getSocialIcon(link.platform)}"></i>
                         ${Utils.escapeHtml(link.platform)}
                     </a>`
@@ -299,7 +299,7 @@ const App = {
                 </div>
                 <div class="social-cards">
                     ${data.links.map(link => `
-                        <a href="${link.url}" target="_blank" rel="noopener" class="social-card">
+                        <a href="${Utils.ensureAbsoluteUrl(link.url)}" target="_blank" rel="noopener" class="social-card">
                             <div class="social-card-icon ${Utils.getSocialClass(link.platform)}">
                                 <i data-lucide="${Utils.getSocialIcon(link.platform)}"></i>
                             </div>
