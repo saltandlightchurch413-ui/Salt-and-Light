@@ -143,7 +143,7 @@ const Admin = {
             </div>
             <div id="admin-songs-list">${Utils.skeleton(4)}</div>
         `;
-        if (window.lucide) lucide.createIcons({ nodes: [container] });
+        if (window.lucide) lucide.createIcons();
 
         try {
             const data = await Utils.fetch('/api/admin/songs?per_page=100');
@@ -235,7 +235,7 @@ const Admin = {
         `;
 
         document.body.appendChild(modal);
-        if (window.lucide) lucide.createIcons({ nodes: [modal] });
+        if (window.lucide) lucide.createIcons();
 
         document.getElementById('song-submit-btn').addEventListener('click', async () => {
             const payload = {
@@ -307,7 +307,7 @@ const Admin = {
             </div>
             <div id="admin-cat-list">${Utils.skeleton(3)}</div>
         `;
-        if (window.lucide) lucide.createIcons({ nodes: [container] });
+        if (window.lucide) lucide.createIcons();
 
         try {
             const data = await Utils.fetch('/api/categories');
@@ -368,7 +368,7 @@ const Admin = {
             </div>
         `;
         document.body.appendChild(modal);
-        if (window.lucide) lucide.createIcons({ nodes: [modal] });
+        if (window.lucide) lucide.createIcons();
 
         document.getElementById('cat-submit').addEventListener('click', async () => {
             const payload = {
@@ -408,7 +408,7 @@ const Admin = {
             </div>
             <div class="gallery-grid" id="admin-gallery">${Utils.skeleton(4)}</div>
         `;
-        if (window.lucide) lucide.createIcons({ nodes: [container] });
+        if (window.lucide) lucide.createIcons();
 
         try {
             const data = await Utils.fetch('/api/gallery?per_page=50');
@@ -461,7 +461,7 @@ const Admin = {
             </div>
         `;
         document.body.appendChild(modal);
-        if (window.lucide) lucide.createIcons({ nodes: [modal] });
+        if (window.lucide) lucide.createIcons();
 
         document.getElementById('img-submit').addEventListener('click', async () => {
             const file = document.getElementById('img-file').files[0];
@@ -498,7 +498,7 @@ const Admin = {
             </div>
             <div id="admin-social-list">${Utils.skeleton(3)}</div>
         `;
-        if (window.lucide) lucide.createIcons({ nodes: [container] });
+        if (window.lucide) lucide.createIcons();
 
         try {
             const data = await Utils.fetch('/api/social-links');
@@ -516,7 +516,7 @@ const Admin = {
                                     <tr>
                                         <td>${Utils.escapeHtml(l.platform)}</td>
                                         <td><a href="${l.url}" target="_blank" style="color:var(--primary);">${Utils.truncate(l.url, 40)}</a></td>
-                                        <td><i data-lucide="${Utils.getSocialIcon(l.platform)}"></i></td>
+                                        <td>${Utils.getSocialIconSVG(l.platform)}</td>
                                         <td>
                                             <div class="table-actions">
                                                 <button class="table-action-btn edit" onclick='Admin.showSocialForm(${JSON.stringify(l)})'><i data-lucide="pencil"></i></button>
@@ -571,7 +571,7 @@ const Admin = {
             </div>
         `;
         document.body.appendChild(modal);
-        if (window.lucide) lucide.createIcons({ nodes: [modal] });
+        if (window.lucide) lucide.createIcons();
 
         document.getElementById('social-submit').addEventListener('click', async () => {
             const platform = document.getElementById('social-platform').value;
@@ -639,7 +639,7 @@ const Admin = {
                     <button class="btn btn-primary" id="about-save"><i data-lucide="save"></i> Save Changes</button>
                 </div>
             `;
-            if (window.lucide) lucide.createIcons({ nodes: [area] });
+            if (window.lucide) lucide.createIcons();
 
             document.getElementById('about-save').addEventListener('click', async () => {
                 try {
@@ -685,7 +685,7 @@ const Admin = {
                     <button class="btn btn-primary mt-md" id="logo-upload"><i data-lucide="upload"></i> Upload Logo</button>
                 </div>
             `;
-            if (window.lucide) lucide.createIcons({ nodes: [area] });
+            if (window.lucide) lucide.createIcons();
 
             document.getElementById('logo-upload').addEventListener('click', async () => {
                 const file = document.getElementById('logo-file').files[0];
@@ -761,7 +761,7 @@ const Admin = {
                 </div>
             </div>
         `;
-        if (window.lucide) lucide.createIcons({ nodes: [container] });
+        if (window.lucide) lucide.createIcons();
 
         document.getElementById('change-password-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -860,6 +860,6 @@ const Admin = {
             input.type = 'password';
             btn.innerHTML = '<i data-lucide="eye"></i>';
         }
-        if (window.lucide) lucide.createIcons({ nodes: [btn] });
+        if (window.lucide) lucide.createIcons();
     }
 };

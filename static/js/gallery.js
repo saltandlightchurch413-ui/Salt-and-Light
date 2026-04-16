@@ -63,7 +63,7 @@ const Gallery = {
             if (e.target === lightbox) lightbox.remove();
         });
         document.body.appendChild(lightbox);
-        if (window.lucide) lucide.createIcons({ nodes: [lightbox] });
+        if (window.lucide) lucide.createIcons();
 
         // Escape to close
         const handler = (e) => {

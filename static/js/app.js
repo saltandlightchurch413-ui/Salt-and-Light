@@ -69,10 +69,10 @@ const App = {
             if (container && data.links.length > 0) {
                 container.innerHTML = data.links.map(link =>
                     `<a href="${Utils.ensureAbsoluteUrl(link.url)}" target="_blank" rel="noopener" class="footer-link" title="${Utils.escapeHtml(link.platform)}">
-                        <i data-lucide="${Utils.getSocialIcon(link.platform)}"></i>
+                        ${Utils.getSocialIconSVG(link.platform)}
                     </a>`
                 ).join('');
-                if (window.lucide) lucide.createIcons({ nodes: [container] });
+                if (window.lucide) lucide.createIcons();
             }
         } catch {}
     },
@@ -309,13 +309,13 @@ const App = {
                 <div class="footer-links" style="margin-top: var(--space-lg);">
                     ${data.links.map(link => `
                         <a href="${Utils.ensureAbsoluteUrl(link.url)}" target="_blank" rel="noopener" class="footer-link" title="${Utils.escapeHtml(link.platform)}">
-                            <i data-lucide="${Utils.getSocialIcon(link.platform)}"></i>
+                            ${Utils.getSocialIconSVG(link.platform)}
                         </a>
                     `).join('')}
                 </div>
             `;
 
-            if (window.lucide) lucide.createIcons({ nodes: [container] });
+            if (window.lucide) lucide.createIcons();
         } catch {}
     },
 

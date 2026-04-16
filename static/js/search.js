@@ -117,7 +117,7 @@ const Search = {
             }).join('');
         }
 
-        if (window.lucide) lucide.createIcons({ nodes: [this.dropdown] });
+        if (window.lucide) lucide.createIcons();
     },
 
     highlight(text, query) {

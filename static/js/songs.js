@@ -179,7 +179,7 @@ const Songs = {
 
         html += '</div>';
         container.innerHTML = html;
-        if (window.lucide) lucide.createIcons({ nodes: [container] });
+        if (window.lucide) lucide.createIcons();
     },
 
     filterByCategory(categoryId, el) {
@@ -432,7 +432,7 @@ const Songs = {
                 </div>
             `;
 
-            if (window.lucide) lucide.createIcons({ nodes: [container] });
+            if (window.lucide) lucide.createIcons();
 
             // Smooth scroll to the songs listing
             container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
