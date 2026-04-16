@@ -528,6 +528,27 @@ body {
     margin-left: var(--space-sm);
 }
 
+.nav-back-btn {
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    transition: all var(--duration) var(--ease);
+    margin-right: -4px; /* snug to logo */
+}
+
+.nav-back-btn:hover {
+    background: var(--primary-bg);
+    color: var(--primary);
+}
+
+.nav-back-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
 .mobile-menu-btn {
     display: none;
     width: 40px;
@@ -2457,23 +2478,25 @@ body {
 .footer-link {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: var(--radius-full);
-    font-size: 0.85rem;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
     color: var(--text-secondary);
-    background: var(--bg);
+    background: var(--bg-alt);
     transition: all var(--duration) var(--ease);
 }
 
 .footer-link:hover {
-    background: var(--primary-bg);
-    color: var(--primary);
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
 .footer-link svg {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
 }
 
 .footer-copy {

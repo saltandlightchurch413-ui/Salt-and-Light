@@ -68,9 +68,8 @@ const App = {
             const container = document.getElementById('footer-social-links');
             if (container && data.links.length > 0) {
                 container.innerHTML = data.links.map(link =>
-                    `<a href="${Utils.ensureAbsoluteUrl(link.url)}" target="_blank" rel="noopener" class="footer-link">
+                    `<a href="${Utils.ensureAbsoluteUrl(link.url)}" target="_blank" rel="noopener" class="footer-link" title="${Utils.escapeHtml(link.platform)}">
                         <i data-lucide="${Utils.getSocialIcon(link.platform)}"></i>
-                        ${Utils.escapeHtml(link.platform)}
                     </a>`
                 ).join('');
                 if (window.lucide) lucide.createIcons({ nodes: [container] });
@@ -106,6 +105,16 @@ const App = {
 
         // Close search dropdown
         Search.hideDropdown();
+
+        // Handle Back button visibility
+        const backBtn = document.getElementById('nav-back-btn');
+        if (backBtn) {
+            if (path === '/' || path === '') {
+                backBtn.style.display = 'none';
+            } else {
+                backBtn.style.display = 'flex';
+            }
+        }
 
         // Route
         if (path === '/' || path === '') {
@@ -297,13 +306,10 @@ const App = {
                         <p class="section-subtitle">Stay connected with our community</p>
                     </div>
                 </div>
-                <div class="social-cards">
+                <div class="footer-links" style="margin-top: var(--space-lg);">
                     ${data.links.map(link => `
-                        <a href="${Utils.ensureAbsoluteUrl(link.url)}" target="_blank" rel="noopener" class="social-card">
-                            <div class="social-card-icon ${Utils.getSocialClass(link.platform)}">
-                                <i data-lucide="${Utils.getSocialIcon(link.platform)}"></i>
-                            </div>
-                            <span class="social-card-name">${Utils.escapeHtml(link.platform)}</span>
+                        <a href="${Utils.ensureAbsoluteUrl(link.url)}" target="_blank" rel="noopener" class="footer-link" title="${Utils.escapeHtml(link.platform)}">
+                            <i data-lucide="${Utils.getSocialIcon(link.platform)}"></i>
                         </a>
                     `).join('')}
                 </div>
