@@ -13,9 +13,6 @@ const App = {
         // Navbar scroll effect
         this.initScrollEffect();
 
-        // Load social links in footer
-        this.loadFooterLinks();
-
         // Load logo
         this.loadLogo();
 
@@ -62,28 +59,17 @@ const App = {
         });
     },
 
-    async loadFooterLinks() {
-        try {
-            const data = await Utils.fetch('/api/social-links');
-            const container = document.getElementById('footer-social-links');
-            if (container && data.links.length > 0) {
-                container.innerHTML = data.links.map(link =>
-                    `<a href="${Utils.ensureAbsoluteUrl(link.url)}" target="_blank" rel="noopener" class="footer-link" title="${Utils.escapeHtml(link.platform)}">
-                        ${Utils.getSocialIconSVG(link.platform)}
-                    </a>`
-                ).join('');
-                if (window.lucide) lucide.createIcons();
-            }
-        } catch {}
-    },
-
     async loadLogo() {
         try {
             const data = await Utils.fetch('/api/about');
             if (data.about.logo_url) {
-                const container = document.getElementById('brand-logo-container');
-                if (container) {
-                    container.innerHTML = `<img src="${data.about.logo_url}" alt="Church Logo">`;
+                const navContainer = document.getElementById('brand-logo-container');
+                if (navContainer) {
+                    navContainer.innerHTML = `<img src="${data.about.logo_url}" alt="Church Logo">`;
+                }
+                const footerContainer = document.getElementById('footer-logo-container');
+                if (footerContainer) {
+                    footerContainer.innerHTML = `<img src="${data.about.logo_url}" alt="Church Logo">`;
                 }
             }
         } catch {}

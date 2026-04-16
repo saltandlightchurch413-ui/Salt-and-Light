@@ -2458,13 +2458,29 @@ body {
 
 .footer-brand {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: var(--space-sm);
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-sm);
     font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 1.25rem;
+}
+
+.brand-icon.footer-logo {
+    width: 60px;
+    height: 60px;
+    margin-bottom: var(--space-xs);
+}
+
+.footer-caption {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .footer-links {
