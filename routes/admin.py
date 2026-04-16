@@ -261,6 +261,7 @@ def update_about():
     about.content = data.get('content', about.content).strip()
     about.location = data.get('location', about.location).strip()
     about.service_times = data.get('service_times', about.service_times).strip()
+    about.footer_caption = data.get('footer_caption', about.footer_caption).strip() if data.get('footer_caption') is not None else about.footer_caption
     db.session.commit()
     return jsonify({'success': True, 'about': about.to_dict()})
 
@@ -334,6 +335,7 @@ def backup_data():
             'content': about.content,
             'location': about.location,
             'service_times': about.service_times,
+            'footer_caption': about.footer_caption,
             'logo_url': about.logo_url,
             'logo_public_id': about.logo_public_id
         }
@@ -407,6 +409,8 @@ def restore_data():
         about.content = about_data.get('content', about.content)
         about.location = about_data.get('location', about.location)
         about.service_times = about_data.get('service_times', about.service_times)
+        if 'footer_caption' in about_data:
+            about.footer_caption = about_data['footer_caption']
         if 'logo_url' in about_data:
             about.logo_url = about_data['logo_url']
         if 'logo_public_id' in about_data:

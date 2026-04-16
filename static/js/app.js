@@ -62,14 +62,21 @@ const App = {
     async loadLogo() {
         try {
             const data = await Utils.fetch('/api/about');
-            if (data.about.logo_url) {
-                const navContainer = document.getElementById('brand-logo-container');
-                if (navContainer) {
-                    navContainer.innerHTML = `<img src="${data.about.logo_url}" alt="Church Logo">`;
+            if (data.about) {
+                if (data.about.logo_url) {
+                    const navContainer = document.getElementById('brand-logo-container');
+                    if (navContainer) {
+                        navContainer.innerHTML = `<img src="${data.about.logo_url}" alt="Church Logo">`;
+                    }
+                    const footerContainer = document.getElementById('footer-logo-container');
+                    if (footerContainer) {
+                        footerContainer.innerHTML = `<img src="${data.about.logo_url}" alt="Church Logo">`;
+                    }
                 }
-                const footerContainer = document.getElementById('footer-logo-container');
-                if (footerContainer) {
-                    footerContainer.innerHTML = `<img src="${data.about.logo_url}" alt="Church Logo">`;
+                
+                const footerCaption = document.getElementById('footer-caption');
+                if (footerCaption && data.about.footer_caption !== undefined) {
+                    footerCaption.innerText = data.about.footer_caption || '';
                 }
             }
         } catch {}

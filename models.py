@@ -227,6 +227,7 @@ class AboutContent(db.Model):
     content = db.Column(db.Text, default='')
     location = db.Column(db.Text, default='')
     service_times = db.Column(db.Text, default='')
+    footer_caption = db.Column(db.String(500), default='Worship the Lord with gladness; come before him with joyful songs.')
     logo_url = db.Column(db.String(500), default='')
     logo_public_id = db.Column(db.String(200), default='')
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc),
@@ -239,6 +240,7 @@ class AboutContent(db.Model):
             'content': self.content or '',
             'location': self.location or '',
             'service_times': self.service_times or '',
+            'footer_caption': self.footer_caption if self.footer_caption is not None else 'Worship the Lord with gladness; come before him with joyful songs.',
             'logo_url': self.logo_url or '',
             'updated_at': self.updated_at.isoformat() if self.updated_at else '',
         }

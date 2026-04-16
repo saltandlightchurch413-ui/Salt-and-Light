@@ -636,6 +636,10 @@ const Admin = {
                         <label class="form-label">Service Times</label>
                         <textarea class="form-textarea" id="about-service-times" style="min-height:100px;" placeholder="e.g. Sunday Service: 10:00 AM">${Utils.escapeHtml(about.service_times || '')}</textarea>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Footer Caption</label>
+                        <input type="text" class="form-input" id="about-footer-caption" value="${Utils.escapeHtml(about.footer_caption || 'Worship the Lord with gladness; come before him with joyful songs.')}" placeholder="Caption at the bottom of the page">
+                    </div>
                     <button class="btn btn-primary" id="about-save"><i data-lucide="save"></i> Save Changes</button>
                 </div>
             `;
@@ -650,6 +654,7 @@ const Admin = {
                             content: document.getElementById('about-content').value,
                             location: document.getElementById('about-location').value,
                             service_times: document.getElementById('about-service-times').value,
+                            footer_caption: document.getElementById('about-footer-caption').value,
                         }),
                     });
                     Utils.toast('About content updated!', 'success');
