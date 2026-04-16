@@ -1,10 +1,23 @@
 from models import db, Admin, AboutContent, Category
+from sqlalchemy import inspect, text
 
 
 def seed_database():
     """Seed the database with initial data if empty."""
     # Ensure all tables are created first
     db.create_all()
+
+    # Automatic specific column migrations for deployed environments
+    try:
+        inspector = inspect(db.engine)
+        if 'about_content' in inspector.get_table_names():
+            columns = [col['name'] for col in inspector.get_columns('about_content')]
+            if 'footer_caption' not in columns:
+                db.session.execute(text("ALTER TABLE about_content ADD COLUMN footer_caption VARCHAR(500) DEFAULT 'Worship the Lord with gladness; come before him with joyful songs.';"))
+                db.session.commit()
+                print('[SEED] Automatically migrated about_content to add footer_caption column.')
+    except Exception as e:
+        print(f'[SEED] Schema migration error: {e}')
 
     # Seed admin
     admin = Admin.query.first()
