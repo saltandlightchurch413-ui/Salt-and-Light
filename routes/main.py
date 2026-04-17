@@ -1,5 +1,6 @@
-from flask import Blueprint, send_from_directory, current_app
+from flask import Blueprint, send_from_directory, render_template, current_app
 import os
+from models import AboutContent
 
 main_bp = Blueprint('main', __name__)
 
@@ -7,10 +8,14 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def index():
     """Serve the SPA shell."""
-    return send_from_directory(
-        os.path.join(current_app.root_path, 'templates'),
-        'base.html'
-    )
+    about = AboutContent.query.first()
+    settings = about.to_dict() if about else {
+        'church_name': 'Salt & Light Church',
+        'meta_description': 'Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly.',
+        'hero_title': 'Find Songs Instantly',
+        'hero_subtitle': 'Telugu & English worship songs at your fingertips'
+    }
+    return render_template('base.html', settings=settings)
 
 
 @main_bp.route('/<path:path>')
@@ -28,7 +33,11 @@ def catch_all(path):
         )
 
     # Otherwise serve SPA shell
-    return send_from_directory(
-        os.path.join(current_app.root_path, 'templates'),
-        'base.html'
-    )
+    about = AboutContent.query.first()
+    settings = about.to_dict() if about else {
+        'church_name': 'Salt & Light Church',
+        'meta_description': 'Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly.',
+        'hero_title': 'Find Songs Instantly',
+        'hero_subtitle': 'Telugu & English worship songs at your fingertips'
+    }
+    return render_template('base.html', settings=settings)

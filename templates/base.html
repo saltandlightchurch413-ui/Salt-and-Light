@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly. Browse, search, and share hymns and praise songs.">
+    <meta name="description" content="{{ settings.meta_description if settings else 'Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly. Browse, search, and share hymns and praise songs.' }}">
     <meta name="theme-color" content="#C8922A">
-    <title>Salt & Light Church — Digital Songbook</title>
+    <title>{{ settings.church_name if settings else 'Salt & Light Church' }} — Digital Songbook</title>
+    <script>
+        window.SITE_SETTINGS = {{ settings | tojson | safe if settings else '{}' | safe }};
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +28,7 @@
     <div id="loading-screen" class="loading-screen">
         <div class="loading-content">
             <div class="loading-spinner"></div>
-            <p class="loading-text">Salt & Light Church</p>
+            <p class="loading-text">{{ settings.church_name if settings else 'Salt & Light Church' }}</p>
         </div>
     </div>
 
@@ -39,7 +42,7 @@
                 <div class="brand-icon" id="brand-logo-container">
                     <img src="/static/images/logo.png" alt="Salt & Light Church Logo">
                 </div>
-                <span class="brand-text">Salt & Light</span>
+                <span class="brand-text">{{ settings.church_name if settings else 'Salt & Light Church' }}</span>
             </a>
 
             <div class="navbar-search" id="nav-search-container">
@@ -112,10 +115,10 @@
                 <div class="brand-icon footer-logo" id="footer-logo-container">
                     <img src="/static/images/logo.png" alt="Logo">
                 </div>
-                <span>Salt & Light Church</span>
+                <span>{{ settings.church_name if settings else 'Salt & Light Church' }}</span>
             </div>
             <p class="footer-caption" id="footer-caption">Worship the Lord with gladness; come before him with joyful songs.</p>
-            <p class="footer-copy">&copy; 2026 Salt & Light Church. All rights reserved.</p>
+            <p class="footer-copy">&copy; <script>document.write(new Date().getFullYear())</script> {{ settings.church_name if settings else 'Salt & Light Church' }}. All rights reserved.</p>
         </div>
     </footer>
 

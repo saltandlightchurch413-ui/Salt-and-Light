@@ -15,7 +15,19 @@ def seed_database():
             if 'footer_caption' not in columns:
                 db.session.execute(text("ALTER TABLE about_content ADD COLUMN footer_caption VARCHAR(500) DEFAULT 'Worship the Lord with gladness; come before him with joyful songs.';"))
                 db.session.commit()
-                print('[SEED] Automatically migrated about_content to add footer_caption column.')
+            if 'church_name' not in columns:
+                db.session.execute(text("ALTER TABLE about_content ADD COLUMN church_name VARCHAR(200) DEFAULT 'Salt & Light Church';"))
+                db.session.commit()
+            if 'hero_title' not in columns:
+                db.session.execute(text("ALTER TABLE about_content ADD COLUMN hero_title VARCHAR(200) DEFAULT 'Find Songs Instantly';"))
+                db.session.commit()
+            if 'hero_subtitle' not in columns:
+                db.session.execute(text("ALTER TABLE about_content ADD COLUMN hero_subtitle VARCHAR(500) DEFAULT 'Telugu & English worship songs at your fingertips';"))
+                db.session.commit()
+            if 'meta_description' not in columns:
+                db.session.execute(text("ALTER TABLE about_content ADD COLUMN meta_description TEXT DEFAULT 'Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly. Browse, search, and share hymns and praise songs.';"))
+                db.session.commit()
+                print('[SEED] Automatically migrated about_content dynamically.')
     except Exception as e:
         print(f'[SEED] Schema migration error: {e}')
 

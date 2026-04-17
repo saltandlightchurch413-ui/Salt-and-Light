@@ -262,6 +262,13 @@ def update_about():
     about.location = data.get('location', about.location).strip()
     about.service_times = data.get('service_times', about.service_times).strip()
     about.footer_caption = data.get('footer_caption', about.footer_caption).strip() if data.get('footer_caption') is not None else about.footer_caption
+    
+    # New fields
+    about.church_name = data.get('church_name', about.church_name).strip() if data.get('church_name') is not None else about.church_name
+    about.hero_title = data.get('hero_title', about.hero_title).strip() if data.get('hero_title') is not None else about.hero_title
+    about.hero_subtitle = data.get('hero_subtitle', about.hero_subtitle).strip() if data.get('hero_subtitle') is not None else about.hero_subtitle
+    about.meta_description = data.get('meta_description', about.meta_description).strip() if data.get('meta_description') is not None else about.meta_description
+    
     db.session.commit()
     return jsonify({'success': True, 'about': about.to_dict()})
 

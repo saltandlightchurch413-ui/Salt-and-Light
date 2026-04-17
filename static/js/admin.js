@@ -620,8 +620,21 @@ const Admin = {
 
             area.innerHTML = `
                 <div style="background:var(--surface);border-radius:var(--radius-lg);padding:var(--space-xl);border:1px solid var(--surface-border);">
+                    <div class="form-group" style="padding-bottom:1.5rem; border-bottom: 1px solid var(--surface-border); margin-bottom: 1.5rem;">
+                        <h3 style="margin-bottom:1rem">Global Site Settings</h3>
+                        <label class="form-label">Church Name</label>
+                        <input type="text" class="form-input" id="about-church-name" value="${Utils.escapeHtml(about.church_name || 'Salt & Light Church')}">
+                        <label class="form-label" style="margin-top:0.5rem">Hero Title</label>
+                        <input type="text" class="form-input" id="about-hero-title" value="${Utils.escapeHtml(about.hero_title || 'Find Songs Instantly')}">
+                        <label class="form-label" style="margin-top:0.5rem">Hero Subtitle</label>
+                        <input type="text" class="form-input" id="about-hero-subtitle" value="${Utils.escapeHtml(about.hero_subtitle || 'Telugu & English worship songs at your fingertips')}">
+                        <label class="form-label" style="margin-top:0.5rem">SEO Meta Description</label>
+                        <textarea class="form-textarea" id="about-meta-description" style="min-height:80px;">${Utils.escapeHtml(about.meta_description || 'Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly. Browse, search, and share hymns and praise songs.')}</textarea>
+                    </div>
+
+                    <h3 style="margin-bottom:1rem">About Page Content</h3>
                     <div class="form-group">
-                        <label class="form-label">Title</label>
+                        <label class="form-label">About Page Title</label>
                         <input type="text" class="form-input" id="about-title" value="${Utils.escapeHtml(about.title || '')}">
                     </div>
                     <div class="form-group">
@@ -655,6 +668,10 @@ const Admin = {
                             location: document.getElementById('about-location').value,
                             service_times: document.getElementById('about-service-times').value,
                             footer_caption: document.getElementById('about-footer-caption').value,
+                            church_name: document.getElementById('about-church-name').value,
+                            hero_title: document.getElementById('about-hero-title').value,
+                            hero_subtitle: document.getElementById('about-hero-subtitle').value,
+                            meta_description: document.getElementById('about-meta-description').value,
                         }),
                     });
                     Utils.toast('About content updated!', 'success');

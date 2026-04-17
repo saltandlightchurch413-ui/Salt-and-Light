@@ -223,6 +223,10 @@ class SocialLink(db.Model):
 class AboutContent(db.Model):
     __tablename__ = 'about_content'
     id = db.Column(db.Integer, primary_key=True)
+    church_name = db.Column(db.String(200), default='Salt & Light Church')
+    hero_title = db.Column(db.String(200), default='Find Songs Instantly')
+    hero_subtitle = db.Column(db.String(500), default='Telugu & English worship songs at your fingertips')
+    meta_description = db.Column(db.Text, default='Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly. Browse, search, and share hymns and praise songs.')
     title = db.Column(db.String(200), default='About Our Church')
     content = db.Column(db.Text, default='')
     location = db.Column(db.Text, default='')
@@ -236,6 +240,10 @@ class AboutContent(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
+            'church_name': self.church_name or 'Salt & Light Church',
+            'hero_title': self.hero_title or 'Find Songs Instantly',
+            'hero_subtitle': self.hero_subtitle or 'Telugu & English worship songs at your fingertips',
+            'meta_description': self.meta_description or 'Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly. Browse, search, and share hymns and praise songs.',
             'title': self.title or '',
             'content': self.content or '',
             'location': self.location or '',

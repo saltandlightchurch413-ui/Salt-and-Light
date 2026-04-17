@@ -164,12 +164,15 @@ const App = {
             totalCategories = catData.categories.length;
         } catch {}
 
+        const heroTitle = window.SITE_SETTINGS?.hero_title || 'Find Songs Instantly';
+        const heroSubtitle = window.SITE_SETTINGS?.hero_subtitle || 'Telugu & English worship songs at your fingertips';
+
         app.innerHTML = `
             <!-- Hero Section -->
             <section class="hero">
                 <div class="hero-content">
-                    <h1>Find Songs Instantly</h1>
-                    <p>Telugu & English worship songs at your fingertips</p>
+                    <h1>${Utils.escapeHtml(heroTitle)}</h1>
+                    <p>${Utils.escapeHtml(heroSubtitle)}</p>
 
                     <div class="hero-search">
                         <div class="hero-search-icon"><i data-lucide="search"></i></div>
