@@ -170,6 +170,34 @@ def upload_gallery_image():
     return jsonify({'success': True, 'image': img.to_dict()}), 201
 
 
+@admin_bp.route('/api/admin/images/<int:img_id>', methods=['PUT'])
+@login_required
+def update_gallery_image(img_id):
+    """Update a gallery image (replace image and/or update caption)."""
+    img = Image.query.get_or_404(img_id)
+
+    # Update caption if provided
+    new_caption = request.form.get('caption')
+    if new_caption is not None:
+        img.caption = new_caption.strip()
+
+    # Replace image if a new file is provided
+    if 'image' in request.files:
+        file = request.files['image']
+        if file:
+            result = upload_image(file, folder='church_songbook/gallery')
+            if not result:
+                return jsonify({'error': 'Failed to upload replacement image'}), 500
+            # Delete old image from Cloudinary
+            if img.public_id:
+                delete_image(img.public_id)
+            img.url = result['url']
+            img.public_id = result['public_id']
+
+    db.session.commit()
+    return jsonify({'success': True, 'image': img.to_dict()})
+
+
 @admin_bp.route('/api/admin/images/<int:img_id>', methods=['DELETE'])
 @login_required
 def delete_gallery_image(img_id):

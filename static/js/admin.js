@@ -423,7 +423,10 @@ const Admin = {
                         <div class="gallery-item-overlay" style="opacity:1;background:linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%);">
                             <div style="width:100%;display:flex;justify-content:space-between;align-items:flex-end;">
                                 <span class="gallery-item-caption">${Utils.escapeHtml(img.caption || '')}</span>
-                                <button class="btn btn-danger btn-sm" onclick="Admin.deleteImage(${img.id})"><i data-lucide="trash-2"></i></button>
+                                <div style="display:flex;gap:6px;">
+                                    <button class="btn btn-primary btn-sm" onclick="Admin.showImageEdit(${img.id}, '${img.url}', '${Utils.escapeHtml(img.caption || '').replace(/'/g, "\\'")}')" title="Edit"><i data-lucide="pencil"></i></button>
+                                    <button class="btn btn-danger btn-sm" onclick="Admin.deleteImage(${img.id})" title="Delete"><i data-lucide="trash-2"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -474,6 +477,67 @@ const Admin = {
             try {
                 await Utils.fetchForm('/api/admin/images', formData);
                 Utils.toast('Image uploaded!', 'success');
+                modal.remove();
+                this.loadImagesTab(document.getElementById('admin-content'));
+            } catch (err) { Utils.toast(err.message, 'error'); }
+        });
+    },
+
+    showImageEdit(imageId, currentUrl, currentCaption) {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal" style="max-width:520px;">
+                <div class="modal-header">
+                    <h3 class="modal-title">Edit Image</h3>
+                    <button class="modal-close" onclick="this.closest('.modal-overlay').remove()"><i data-lucide="x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div style="text-align:center;margin-bottom:var(--space-lg);">
+                        <img id="edit-img-preview" src="${currentUrl}" alt="Current image" style="max-width:100%;max-height:200px;border-radius:var(--radius-md);object-fit:cover;box-shadow:var(--shadow-md);">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Replace Image (optional)</label>
+                        <input type="file" class="form-input" id="edit-img-file" accept="image/*">
+                        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Leave empty to keep current image</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Caption</label>
+                        <input type="text" class="form-input" id="edit-img-caption" value="${Utils.escapeHtml(currentCaption)}" placeholder="Describe this image">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+                    <button class="btn btn-primary" id="edit-img-submit"><i data-lucide="save"></i> Save Changes</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        if (window.lucide) lucide.createIcons();
+
+        // Preview new image when selected
+        document.getElementById('edit-img-file').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    document.getElementById('edit-img-preview').src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('edit-img-submit').addEventListener('click', async () => {
+            const formData = new FormData();
+            const file = document.getElementById('edit-img-file').files[0];
+            if (file) {
+                formData.append('image', file);
+            }
+            formData.append('caption', document.getElementById('edit-img-caption').value.trim());
+
+            try {
+                await Utils.fetchForm(`/api/admin/images/${imageId}`, formData, 'PUT');
+                Utils.toast('Image updated!', 'success');
                 modal.remove();
                 this.loadImagesTab(document.getElementById('admin-content'));
             } catch (err) { Utils.toast(err.message, 'error'); }
