@@ -422,9 +422,12 @@ const Admin = {
                         <img src="${img.url}" alt="${Utils.escapeHtml(img.caption || '')}" loading="lazy">
                         <div class="gallery-item-overlay" style="opacity:1;background:linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%);">
                             <div style="width:100%;display:flex;justify-content:space-between;align-items:flex-end;">
-                                <span class="gallery-item-caption">${Utils.escapeHtml(img.caption || '')}</span>
+                                <div>
+                                    <span class="gallery-item-caption" style="display:block;">${Utils.escapeHtml(img.caption || '')}</span>
+                                    <span style="font-size:0.75rem;color:var(--text-muted);">Order: ${img.order || 0}</span>
+                                </div>
                                 <div style="display:flex;gap:6px;">
-                                    <button class="btn btn-primary btn-sm" onclick="Admin.showImageEdit(${img.id}, '${img.url}', '${Utils.escapeHtml(img.caption || '').replace(/'/g, "\\'")}')" title="Edit"><i data-lucide="pencil"></i></button>
+                                    <button class="btn btn-primary btn-sm" onclick="Admin.showImageEdit(${img.id}, '${img.url}', '${Utils.escapeHtml(img.caption || '').replace(/'/g, "\\'")}', ${img.order || 0})" title="Edit"><i data-lucide="pencil"></i></button>
                                     <button class="btn btn-danger btn-sm" onclick="Admin.deleteImage(${img.id})" title="Delete"><i data-lucide="trash-2"></i></button>
                                 </div>
                             </div>
@@ -456,6 +459,11 @@ const Admin = {
                         <label class="form-label">Caption (optional)</label>
                         <input type="text" class="form-input" id="img-caption" placeholder="Describe this image">
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Display Order</label>
+                        <input type="number" class="form-input" id="img-order" value="0" min="0">
+                        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Lower numbers appear first</p>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
@@ -473,6 +481,7 @@ const Admin = {
             const formData = new FormData();
             formData.append('image', file);
             formData.append('caption', document.getElementById('img-caption').value.trim());
+            formData.append('order', parseInt(document.getElementById('img-order').value) || 0);
 
             try {
                 await Utils.fetchForm('/api/admin/images', formData);
@@ -483,7 +492,7 @@ const Admin = {
         });
     },
 
-    showImageEdit(imageId, currentUrl, currentCaption) {
+    showImageEdit(imageId, currentUrl, currentCaption, currentOrder) {
         const modal = document.createElement('div');
         modal.className = 'modal-overlay';
         modal.innerHTML = `
@@ -504,6 +513,11 @@ const Admin = {
                     <div class="form-group">
                         <label class="form-label">Caption</label>
                         <input type="text" class="form-input" id="edit-img-caption" value="${Utils.escapeHtml(currentCaption)}" placeholder="Describe this image">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Display Order</label>
+                        <input type="number" class="form-input" id="edit-img-order" value="${currentOrder}" min="0">
+                        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Lower numbers appear first</p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -534,6 +548,7 @@ const Admin = {
                 formData.append('image', file);
             }
             formData.append('caption', document.getElementById('edit-img-caption').value.trim());
+            formData.append('order', parseInt(document.getElementById('edit-img-order').value) || 0);
 
             try {
                 await Utils.fetchForm(`/api/admin/images/${imageId}`, formData, 'PUT');
@@ -762,16 +777,32 @@ const Admin = {
             area.innerHTML = `
                 <div style="background:var(--surface);border-radius:var(--radius-lg);padding:var(--space-xl);border:1px solid var(--surface-border);text-align:center;">
                     ${data.about.logo_url ?
-                        `<img src="${data.about.logo_url}" alt="Church Logo" style="width:150px;height:150px;object-fit:cover;border-radius:var(--radius-xl);margin:0 auto var(--space-xl);box-shadow:var(--shadow-md);">` :
+                        `<img src="${data.about.logo_url}" alt="Church Logo" style="width:150px;height:150px;object-fit:cover;border-radius:var(--radius-xl);margin:0 auto var(--space-xl);box-shadow:var(--shadow-md);">
+                         <div style="margin-bottom: var(--space-xl);">
+                             <button class="btn btn-danger btn-sm" id="logo-remove"><i data-lucide="trash-2"></i> Remove Logo</button>
+                         </div>` :
                         `<div style="width:150px;height:150px;background:var(--bg);border-radius:var(--radius-xl);margin:0 auto var(--space-xl);display:flex;align-items:center;justify-content:center;"><i data-lucide="image" style="width:48px;height:48px;color:var(--text-muted);"></i></div>`
                     }
                     <div class="form-group" style="max-width:400px;margin:0 auto;">
                         <input type="file" class="form-input" id="logo-file" accept="image/*">
                     </div>
-                    <button class="btn btn-primary mt-md" id="logo-upload"><i data-lucide="upload"></i> Upload Logo</button>
+                    <button class="btn btn-primary mt-md" id="logo-upload"><i data-lucide="${data.about.logo_url ? 'pencil' : 'upload'}"></i> ${data.about.logo_url ? 'Replace Logo' : 'Upload Logo'}</button>
                 </div>
             `;
             if (window.lucide) lucide.createIcons();
+
+            const removeBtn = document.getElementById('logo-remove');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', async () => {
+                    if (!confirm('Are you sure you want to remove the church logo? The website will revert to the default logo.')) return;
+                    try {
+                        await Utils.fetch('/api/admin/logo', { method: 'DELETE' });
+                        Utils.toast('Logo removed!', 'success');
+                        this.loadLogoTab(container);
+                        App.loadLogo();
+                    } catch (err) { Utils.toast(err.message, 'error'); }
+                });
+            }
 
             document.getElementById('logo-upload').addEventListener('click', async () => {
                 const file = document.getElementById('logo-file').files[0];

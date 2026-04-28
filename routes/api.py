@@ -134,7 +134,7 @@ def get_gallery():
     try:
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 20, type=int)
-        pagination = Image.query.order_by(Image.created_at.desc()).paginate(
+        pagination = Image.query.order_by(Image.order.asc(), Image.created_at.desc()).paginate(
             page=page, per_page=per_page, error_out=False
         )
         return jsonify({

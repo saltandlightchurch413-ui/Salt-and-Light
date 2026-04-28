@@ -155,6 +155,7 @@ def upload_gallery_image():
 
     file = request.files['image']
     caption = request.form.get('caption', '').strip()
+    order = request.form.get('order', 0, type=int)
 
     result = upload_image(file, folder='church_songbook/gallery')
     if not result:
@@ -163,7 +164,8 @@ def upload_gallery_image():
     img = Image(
         url=result['url'],
         public_id=result['public_id'],
-        caption=caption
+        caption=caption,
+        order=order
     )
     db.session.add(img)
     db.session.commit()
@@ -180,6 +182,11 @@ def update_gallery_image(img_id):
     new_caption = request.form.get('caption')
     if new_caption is not None:
         img.caption = new_caption.strip()
+
+    # Update order if provided
+    new_order = request.form.get('order', type=int)
+    if new_order is not None:
+        img.order = new_order
 
     # Replace image if a new file is provided
     if 'image' in request.files:
@@ -326,6 +333,24 @@ def upload_logo():
     about.logo_public_id = result['public_id']
     db.session.commit()
     return jsonify({'success': True, 'logo_url': about.logo_url})
+
+
+@admin_bp.route('/api/admin/logo', methods=['DELETE'])
+@login_required
+def delete_logo():
+    """Remove the church logo."""
+    about = AboutContent.query.first()
+    if not about or not about.logo_url:
+        return jsonify({'success': True, 'message': 'No logo to delete'})
+
+    # Delete from Cloudinary
+    if about.logo_public_id:
+        delete_image(about.logo_public_id)
+
+    about.logo_url = ''
+    about.logo_public_id = ''
+    db.session.commit()
+    return jsonify({'success': True})
 
 # ─── Backup & Restore ───────────────────────────────────
 
