@@ -186,6 +186,7 @@ class Image(db.Model):
     url = db.Column(db.String(500), nullable=False)
     public_id = db.Column(db.String(200), default='')
     caption = db.Column(db.String(200), default='')
+    order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     def to_dict(self):
@@ -194,6 +195,7 @@ class Image(db.Model):
             'url': self.url,
             'public_id': self.public_id or '',
             'caption': self.caption or '',
+            'order': self.order or 0,
             'created_at': self.created_at.isoformat() if self.created_at else '',
         }
 
