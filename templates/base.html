@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#C8922A">
     <title>{{ settings.church_name if settings else 'Salt & Light Church' }} — Digital Songbook</title>
     <script>
-        window.SITE_SETTINGS = {{ settings | tojson | safe if settings else '{}' | safe }};
+        window.SITE_SETTINGS = {% if settings %}{{ settings | tojson | safe }}{% else %}{}{% endif %};
     </script>
 
     <!-- Google Fonts -->

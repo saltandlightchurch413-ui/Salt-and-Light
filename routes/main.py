@@ -4,17 +4,35 @@ from models import AboutContent
 
 main_bp = Blueprint('main', __name__)
 
+# Default settings used when DB is unavailable
+_DEFAULT_SETTINGS = {
+    'church_name': 'Salt & Light Church',
+    'meta_description': 'Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly.',
+    'hero_title': 'Find Songs Instantly',
+    'hero_subtitle': 'Telugu & English worship songs at your fingertips',
+    'footer_caption': 'Worship the Lord with gladness; come before him with joyful songs.',
+    'logo_url': '',
+    'title': '',
+    'content': '',
+    'location': '',
+    'service_times': '',
+}
+
+
+def _get_settings():
+    """Safely fetch site settings, returning defaults if DB is unavailable."""
+    try:
+        about = AboutContent.query.first()
+        return about.to_dict() if about else dict(_DEFAULT_SETTINGS)
+    except Exception as e:
+        current_app.logger.warning(f'Could not load settings from DB: {e}')
+        return dict(_DEFAULT_SETTINGS)
+
 
 @main_bp.route('/')
 def index():
     """Serve the SPA shell."""
-    about = AboutContent.query.first()
-    settings = about.to_dict() if about else {
-        'church_name': 'Salt & Light Church',
-        'meta_description': 'Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly.',
-        'hero_title': 'Find Songs Instantly',
-        'hero_subtitle': 'Telugu & English worship songs at your fingertips'
-    }
+    settings = _get_settings()
     return render_template('base.html', settings=settings)
 
 
@@ -33,11 +51,5 @@ def catch_all(path):
         )
 
     # Otherwise serve SPA shell
-    about = AboutContent.query.first()
-    settings = about.to_dict() if about else {
-        'church_name': 'Salt & Light Church',
-        'meta_description': 'Salt & Light Church Digital Songbook — Find Telugu & English worship songs instantly.',
-        'hero_title': 'Find Songs Instantly',
-        'hero_subtitle': 'Telugu & English worship songs at your fingertips'
-    }
+    settings = _get_settings()
     return render_template('base.html', settings=settings)
